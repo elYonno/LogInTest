@@ -1,5 +1,7 @@
 package com.example.logintest.Background;
 
+import android.os.AsyncTask;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -12,25 +14,27 @@ import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class RegisterBackground {
+public class RegisterBackground extends AsyncTask<String, Void, String> {
 
     private String username;
-    private String email;
     private String password;
     private String result;
-    private static final String ADD_URL = "https://studev.groept.be/api/a20sd508/add/"; // username/email/password
-    private static final String CHECK_URL = "https://studev.groept.be/api/a20sd508/check/";
+    private static final String ADD_URL = "https://studev.groept.be/api/a20sd505/addLogIn/"; // username/email/password
+    private static final String CHECK_URL = "https://studev.groept.be/api/a20sd505/checkLogIn/";
 
-    public RegisterBackground(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
+    @Override
+    protected String doInBackground(String... strings) {
+        System.out.println("Register background made!");
+        this.username = strings[0];
+        this.password = strings[1];
 
         if (checker()) register();
-        else result = "Username already exists!";
+
+        return null;
     }
 
     private boolean checker() {
+        System.out.println("Checking");
         AtomicBoolean check = new AtomicBoolean(false);
 
         new JsonArrayRequest(Request.Method.GET, CHECK_URL, null,
@@ -40,21 +44,18 @@ public class RegisterBackground {
                          try {
                              JSONObject o = response.getJSONObject(i);
 
-                             String temp_mail = o.get("email").toString();
-                             String temp_name = o.get("name").toString();
-
-                             if (temp_mail.equals(email)) {
-                                 test = false;
-                                 result = "Email already taken!";
-                                 break;
-                             }
+                             String temp_name = o.get("Username").toString();
 
                              if (temp_name.equals(username)) {
                                  test = false;
                                  result = "Username already exists!";
                                  break;
                              }
-                         } catch (JSONException e) { e.printStackTrace(); }
+                         } catch (JSONException e) {
+                             System.out.println("-------------------------------------ERROR------------------------------------------");
+                             result = e.toString();
+                             e.printStackTrace();
+                         }
                      }
                     check.set(test);
                 }, error -> {
@@ -67,25 +68,18 @@ public class RegisterBackground {
     private void register() {
         JSONObject data = new JSONObject();
         try {
-            data.put("nm", username);
-            data.put("em", email);
-            data.put("pas", password);
+            data.put("username", username);
+            data.put("password", password);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         new JsonObjectRequest(Request.Method.PUT, ADD_URL, data,
                 response -> {
-                    result = "Username " + username + " successfully been created?";
+                    result = "Username " + username + " successfully been created!";
                 }, error -> {
-            result = "There was an error!";
-        }
-        );
+                    result = "There was an error!";
+        });
 
-    }
-
-
-    public String response() {
-        return result;
     }
 }

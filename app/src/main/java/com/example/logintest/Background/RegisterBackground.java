@@ -27,8 +27,10 @@ public class RegisterBackground extends AsyncTask<String, Void, String> {
         System.out.println("Register background made!");
         this.username = strings[0];
         this.password = strings[1];
+        result = "";
 
-        if (checker()) register();
+//        if (checker())
+        register();
 
         return null;
     }

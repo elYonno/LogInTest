@@ -49,38 +49,18 @@ public class Register extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
     }
 
-    public void onClick_btnRegister(View view) {
-        Toast.makeText(Register.this, "Register button clicked", Toast.LENGTH_LONG).show();
+    public void onClick_btnAdd(View view) {
+        System.out.println("Register button clicked");
         String text_user = username.getText().toString();
         String text_password = password.getText().toString();
 
-//        AsyncTask<String, Void, String> rb = new RegisterBackground().execute(text_user, text_password);
-//
-//        try {
-//            Toast.makeText(this, rb.get(), Toast.LENGTH_LONG);
-//        } catch (Exception e) { e.printStackTrace(); }
-
-        JSONObject data = new JSONObject();
-        try {
-            data.put("username", text_user);
-            data.put("password", text_password);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        StringRequest submitRequest = new StringRequest(Request.Method.POST, ADD_URL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Toast.makeText(Register.this, "Username added", Toast.LENGTH_LONG).show();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(Register.this, "Error adding username", Toast.LENGTH_LONG).show();
-            }
-        }) {
+        System.out.println("Adding JSon");
+        StringRequest submitRequest = new StringRequest(Request.Method.POST, ADD_URL,
+                response -> System.out.println("Success: " + response),
+                error -> System.out.println("Error: " + error.toString())) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+                System.out.println("Adding map");
                 Map<String, String> params = new HashMap<>();
 
                 params.put("username", text_user);
@@ -92,6 +72,5 @@ public class Register extends AppCompatActivity {
         };
 
         requestQueue.add(submitRequest);
-
     }
 }

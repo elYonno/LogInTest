@@ -38,6 +38,7 @@ public class Register extends AppCompatActivity {
         String text_user = username.getText().toString();
         String text_password = password.getText().toString();
 
+<<<<<<< HEAD
         RegisterBackground registerBackground = new RegisterBackground(requestQueue, text_user, text_password);
         try {
             wait(1000);
@@ -49,5 +50,25 @@ public class Register extends AppCompatActivity {
 
     public void toast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+=======
+        System.out.println("Adding JSon");
+        StringRequest submitRequest = new StringRequest(Request.Method.POST, ADD_URL,
+                response -> System.out.println("Success: " + response),
+                error -> System.out.println("Error: " + error.toString())) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                System.out.println("Adding map");
+                Map<String, String> params = new HashMap<>();
+
+                params.put("username", text_user);
+                params.put("password", text_password);
+
+                return params;
+            }
+
+        };
+
+        requestQueue.add(submitRequest);
+>>>>>>> e404af9e23896f1a043e949ec0a2eb869227a07f
     }
 }
